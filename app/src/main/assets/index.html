@@ -1,1 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Tally Bank Reconciliation</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #222;
+    }
+
+    .header {
+        background: #166534;
+        color: white;
+        padding: 18px 15px;
+        text-align: center;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .header p {
+        margin: 6px 0 0;
+        font-size: 13px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        padding: 15px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .card h2 {
+        margin-top: 0;
+        font-size: 18px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #fafafa;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        border: 0;
+        border-radius: 8px;
+        background: #166534;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    button:disabled {
+        background: #999;
+    }
+
+    .status {
+        padding: 12px;
+        border-radius: 8px;
+        background: #f0fdf4;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .stat {
+        padding: 15px 8px;
+        border-radius: 10px;
+        text-align: center;
+        background: #f8fafc;
+        border: 1px solid #ddd;
+    }
+
+    .stat strong {
+        display: block;
+        font-size: 22px;
+        margin-bottom: 5px;
+    }
+
+    .matched {
+        color: #15803d;
+    }
+
+    .missing {
+        color: #dc2626;
+    }
+
+    .possible {
+        color: #ca8a04;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 9px;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    th {
+        background: #f1f5f9;
+    }
+
+    .badge {
+        padding: 5px 8px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .badge-matched {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-missing {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .badge-possible {
+        background: #fef9c3;
+        color: #854d0e;
+    }
+
+    .small {
+        font-size: 12px;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @media(max-width:600px) {
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+            font-size: 20px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🏦 Tally Bank Reconciliation</h1>
+    <p>Compare Tally Bank Statement with Original Bank Statement</p>
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <h2>1. Upload Tally Bank Statement</h2>
+
+        <label>Select Tally PDF</label>
+
+        <input
+            type="file"
+            id="tallyFile"
+            accept=".pdf"
+        >
+
+        <p class="small">
+            Tally se nikala hua bank statement PDF select karein.
+        </p>
+    </div>
+
+
+    <div class="card">
+        <h2>2. Upload Original Bank Statement</h2>
+
+        <label>Select Bank PDF</label>
+
+        <input
+            type="file"
+            id="bankFile"
+            accept=".pdf"
+        >
+
+        <p class="small">
+            Bank ka original/normal statement PDF select karein.
+        </p>
+    </div>
+
+
+    <div class="card">
+
+        <button id="compareBtn">
+            🔍 Compare Statements
+        </button>
+
+        <div id="status" class="status">
+            Ready. Dono PDF select karke Compare button dabayein.
+        </div>
+
+    </div>
+
+
+    <div id="resultSection" class="hidden">
+
+        <div class="card">
+
+            <h2>📊 Reconciliation Result</h2>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <strong id="totalCount">0</strong>
+                    Total Entries
+                </div>
+
+                <div class="stat matched">
+                    <strong id="matchedCount">0</strong>
+                    Matched
+                </div>
+
+                <div class="stat missing">
+                    <strong id="missingCount">0</strong>
+                    Missing
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📋 Details</h2>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Narration</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="resultBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const tallyFile = document.getElementById("tallyFile");
+const bankFile = document.getElementById("bankFile");
+const compareBtn = document.getElementById("compareBtn");
+const statusBox = document.getElementById("status");
+
+const resultSection = document.getElementById("resultSection");
+const resultBody = document.getElementById("resultBody");
+
+const totalCount = document.getElementById("totalCount");
+const matchedCount = document.getElementById("matchedCount");
+const missingCount = document.getElementById("missingCount");
+
+
+function setStatus(message) {
+    statusBox.innerHTML = message;
+}
+
+
+function cleanText(text) {
+
+    if (!text) return "";
+
+    return text
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+
+}
+
+
+function extractAmount(text) {
+
+    if (!text) return null;
+
+    const matches = text.match(
+        /(?:₹|rs\.?|inr)?\s*[\d,]+(?:\.\d{1,2})?/gi
+    );
+
+    if (!matches) return null;
+
+    let values = [];
+
+    for (let item of matches) {
+
+        let value = item
+            .replace(/₹/g, "")
+            .replace(/rs\.?/gi, "")
+            .replace(/inr/gi, "")
+            .replace(/,/g, "")
+            .trim();
+
+        let number = parseFloat(value);
+
+        if (!isNaN(number)) {
+            values.push(number);
+        }
+    }
+
+    if (values.length === 0) return null;
+
+    return values[values.length - 1];
+
+}
+
+
+function detectType(text) {
+
+    const t = cleanText(text);
+
+    if (
+        t.includes("withdrawal") ||
+        t.includes("debit") ||
+        t.includes("dr") ||
+        t.includes("by")
+    ) {
+        return "Debit";
+    }
+
+    if (
+        t.includes("deposit") ||
+        t.includes("credit") ||
+        t.includes("cr") ||
+        t.includes("to")
+    ) {
+        return "Credit";
+    }
+
+    return "";
+}
+
+
+function parseLines(text) {
+
+    if (!text) return [];
+
+    const lines = text
+        .split(/\r?\n/)
+        .map(x => x.trim())
+        .filter(x => x.length > 0);
+
+    let entries = [];
+
+    for (let i = 0; i < lines.length; i++) {
+
+        let line = lines[i];
+
+        let amount = extractAmount(line);
+
+        if (amount === null) {
+            continue;
+        }
+
+        let dateMatch = line.match(
+            /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/
+        );
+
+        let date = dateMatch ? dateMatch[0] : "";
+
+        let type = detectType(line);
+
+        entries.push({
+            date: date,
+            amount: amount,
+            type: type,
+            narration: line
+        });
+
+    }
+
+    return entries;
+
+}
+
+
+function compareEntries(tallyEntries, bankEntries) {
+
+    let results = [];
+
+    let matched = 0;
+    let missing = 0;
+
+    tallyEntries.forEach((entry, index) => {
+
+        let found = false;
+
+        for (let bank of bankEntries) {
+
+            if (
+                entry.amount !== null &&
+                bank.amount !== null &&
+                Math.abs(entry.amount - bank.amount) < 0.01
+            ) {
+
+                found = true;
+                break;
+
+            }
+
+        }
+
+        let status;
+
+        if (found) {
+            status = "MATCHED";
+            matched++;
+        } else {
+            status = "MISSING";
+            missing++;
+        }
+
+        results.push({
+            no: index + 1,
+            date: entry.date,
+            amount: entry.amount,
+            type: entry.type,
+            narration: entry.narration,
+            status: status
+        });
+
+    });
+
+    return {
+        results: results,
+        matched: matched,
+        missing: missing
+    };
+
+}
+
+
+function displayResults(data) {
+
+    resultBody.innerHTML = "";
+
+    data.results.forEach(row => {
+
+        let tr = document.createElement("tr");
+
+        let badgeClass =
+            row.status === "MATCHED"
+                ? "badge-matched"
+                : "badge-missing";
+
+        tr.innerHTML = `
+            <td>${row.no}</td>
+            <td>${row.date || "-"}</td>
+            <td>${row.amount !== null ? row.amount.toFixed(2) : "-"}</td>
+            <td>${row.type || "-"}</td>
+            <td>${row.narration}</td>
+            <td>
+                <span class="badge ${badgeClass}">
+                    ${row.status}
+                </span>
+            </td>
+        `;
+
+        resultBody.appendChild(tr);
+
+    });
+
+    totalCount.textContent = data.results.length;
+    matchedCount.textContent = data.matched;
+    missingCount.textContent = data.missing;
+
+    resultSection.classList.remove("hidden");
+
+}
+
+
+compareBtn.addEventListener("click", async function() {
+
+    if (!tallyFile.files.length) {
+
+        setStatus("❌ Please select Tally PDF.");
+
+        return;
+    }
+
+    if (!bankFile.files.length) {
+
+        setStatus("❌ Please select Original Bank PDF.");
+
+        return;
+    }
+
+
+    compareBtn.disabled = true;
+
+    setStatus(
+        "⏳ PDF files selected. Processing started..."
+    );
+
+
+    try {
+
+        const tally = tallyFile.files[0];
+        const bank = bankFile.files[0];
+
+
+        /*
+         * Basic browser-side processing.
+         *
+         * PDF text extraction will be added through
+         * the Android-compatible PDF engine.
+         */
+
+        const tallyText =
+            await readFileAsText(tally);
+
+        const bankText =
+            await readFileAsText(bank);
+
+
+        const tallyEntries =
+            parseLines(tallyText);
+
+        const bankEntries =
+            parseLines(bankText);
+
+
+        if (tallyEntries.length === 0) {
+
+            setStatus(
+                "⚠️ Tally PDF se entries read nahi ho paayi. " +
+                "Agar PDF scanned/image hai to OCR engine required hai."
+            );
+
+            compareBtn.disabled = false;
+
+            return;
+        }
+
+
+        const data =
+            compareEntries(
+                tallyEntries,
+                bankEntries
+            );
+
+
+        displayResults(data);
+
+
+        setStatus(
+            "✅ Comparison complete."
+        );
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+        setStatus(
+            "❌ Error: " +
+            error.message
+        );
+
+    }
+
+    compareBtn.disabled = false;
+
+});
+
+
+function readFileAsText(file) {
+
+    return new Promise((resolve, reject) => {
+
+        /*
+         * Temporary fallback.
+         *
+         * This reads the file name and basic information.
+         * Real PDF extraction/OCR requires PDF.js + OCR.
+         */
+
+        const reader = new FileReader();
+
+        reader.onload = function() {
+
+            resolve(
+                file.name + "\n" +
+                "PDF selected successfully."
+            );
+
+        };
+
+        reader.onerror = reject;
+
+        reader.readAsArrayBuffer(file);
+
+    });
+
+}
+
+</script>
+
+</body>
+          </html>
