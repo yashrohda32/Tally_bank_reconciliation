@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Tally Bank Reconciliation</title>
 
@@ -13,155 +13,162 @@
 *{box-sizing:border-box}
 
 body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#f3f4f6;
- color:#222
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f4f6;
+    color:#222;
 }
 
 .header{
- background:#166534;
- color:white;
- padding:18px 12px;
- text-align:center
+    background:#166534;
+    color:white;
+    padding:18px 12px;
+    text-align:center;
 }
 
-.header h1{
- margin:0;
- font-size:21px
-}
-
-.header p{
- margin:6px 0 0;
- font-size:13px
-}
+.header h1{margin:0;font-size:22px}
+.header p{margin:6px 0 0;font-size:13px}
 
 .container{
- max-width:900px;
- margin:auto;
- padding:15px
+    max-width:1100px;
+    margin:auto;
+    padding:15px;
 }
 
 .card{
- background:white;
- border-radius:12px;
- padding:17px;
- margin-bottom:15px;
- box-shadow:0 2px 8px #00000012
+    background:white;
+    border-radius:12px;
+    padding:17px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px #00000012;
 }
 
-h2{
- margin-top:0;
- font-size:18px
-}
+h2{font-size:18px;margin-top:0}
 
 input[type=file]{
- width:100%;
- padding:12px;
- border:1px solid #ccc;
- border-radius:8px;
- background:#fafafa
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    background:#fafafa;
 }
 
 button{
- width:100%;
- padding:14px;
- margin-top:10px;
- border:0;
- border-radius:8px;
- background:#166534;
- color:white;
- font-size:16px;
- font-weight:bold
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:0;
+    border-radius:8px;
+    background:#166534;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
 }
 
-button:disabled{
- background:#999
-}
+button:disabled{background:#999}
 
 .status{
- margin-top:12px;
- padding:12px;
- border-radius:8px;
- background:#f0fdf4;
- font-size:14px;
- line-height:1.5
+    margin-top:12px;
+    padding:12px;
+    border-radius:8px;
+    background:#f0fdf4;
+    font-size:14px;
+    line-height:1.5;
 }
 
 .progress{
- margin-top:10px;
- height:8px;
- background:#ddd;
- border-radius:10px;
- overflow:hidden
+    margin-top:10px;
+    height:8px;
+    background:#ddd;
+    border-radius:10px;
+    overflow:hidden;
 }
 
 .bar{
- height:100%;
- width:0%;
- background:#166534;
- transition:.3s
+    height:100%;
+    width:0%;
+    background:#166534;
+    transition:.3s;
 }
 
-pre{
- white-space:pre-wrap;
- word-break:break-word;
- background:#111827;
- color:#e5e7eb;
- padding:12px;
- border-radius:8px;
- max-height:350px;
- overflow:auto;
- font-size:12px
-}
+.hidden{display:none}
 
-.hidden{
- display:none
-}
-
-.row{
- margin-top:10px
-}
-
-.small{
- font-size:12px;
- color:#666;
- line-height:1.5
-}
+.table-wrap{overflow-x:auto}
 
 table{
- width:100%;
- border-collapse:collapse;
- min-width:650px
+    width:100%;
+    border-collapse:collapse;
+    min-width:850px;
 }
 
 th,td{
- border:1px solid #ddd;
- padding:8px;
- font-size:12px
+    border:1px solid #ddd;
+    padding:8px;
+    font-size:12px;
+    vertical-align:top;
 }
 
-th{
- background:#f1f5f9
+th{background:#f1f5f9}
+
+.matched{
+    background:#dcfce7;
+    color:#166534;
+    font-weight:bold;
 }
 
-.table-wrap{
- overflow-x:auto
+.missing{
+    background:#fee2e2;
+    color:#991b1b;
+    font-weight:bold;
 }
 
-.green{
- color:#15803d;
- font-weight:bold
+.possible{
+    background:#fef9c3;
+    color:#854d0e;
+    font-weight:bold;
 }
 
-.red{
- color:#dc2626;
- font-weight:bold
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
 }
 
-.yellow{
- color:#ca8a04;
- font-weight:bold
+.stat{
+    padding:14px 8px;
+    text-align:center;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+.stat strong{
+    display:block;
+    font-size:22px;
+    margin-bottom:5px;
+}
+
+pre{
+    white-space:pre-wrap;
+    word-break:break-word;
+    background:#111827;
+    color:#e5e7eb;
+    padding:12px;
+    border-radius:8px;
+    max-height:300px;
+    overflow:auto;
+    font-size:12px;
+}
+
+.small{
+    font-size:12px;
+    color:#666;
+    line-height:1.5;
+}
+
+@media(max-width:650px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
 }
 </style>
 </head>
@@ -169,8 +176,8 @@ th{
 <body>
 
 <div class="header">
-<h1>🏦 Tally Bank Reconciliation</h1>
-<p>PDF Reader + OCR + Entry Analyzer</p>
+    <h1>🏦 Tally Bank Reconciliation</h1>
+    <p>Automatic Entry Matching</p>
 </div>
 
 <div class="container">
@@ -180,12 +187,12 @@ th{
 <h2>📄 Tally Bank Statement</h2>
 
 <input
- type="file"
- id="tallyFile"
- accept=".pdf,application/pdf">
+    type="file"
+    id="tallyFile"
+    accept=".pdf,application/pdf">
 
 <p class="small">
-Tally se nikala hua PDF select karein.
+Tally se export kiya hua bank statement select karein.
 </p>
 
 </div>
@@ -196,12 +203,12 @@ Tally se nikala hua PDF select karein.
 <h2>🏦 Original Bank Statement</h2>
 
 <input
- type="file"
- id="bankFile"
- accept=".pdf,application/pdf">
+    type="file"
+    id="bankFile"
+    accept=".pdf,application/pdf">
 
 <p class="small">
-Bank ka original statement PDF select karein.
+Bank ka original statement select karein.
 </p>
 
 </div>
@@ -210,7 +217,7 @@ Bank ka original statement PDF select karein.
 <div class="card">
 
 <button id="analyzeBtn">
-🔍 Read & Analyze PDFs
+🔍 Analyze & Match Entries
 </button>
 
 <div id="status" class="status">
@@ -218,51 +225,84 @@ Dono PDF select karein.
 </div>
 
 <div class="progress">
-<div id="progressBar" class="bar"></div>
+    <div id="progressBar" class="bar"></div>
 </div>
 
 </div>
 
 
-<div id="result" class="hidden">
+<div id="resultSection" class="hidden">
 
 <div class="card">
 
-<h2>📊 Analysis</h2>
+<h2>📊 Reconciliation Summary</h2>
 
-<div id="summary"></div>
+<div class="stats">
+
+<div class="stat">
+<strong id="total">0</strong>
+Tally Entries
+</div>
+
+<div class="stat">
+<strong id="matched">0</strong>
+🟢 Matched
+</div>
+
+<div class="stat">
+<strong id="missing">0</strong>
+🔴 Missing
+</div>
+
+<div class="stat">
+<strong id="possible">0</strong>
+🟡 Possible
+</div>
+
+</div>
 
 </div>
 
 
 <div class="card">
 
-<h2>📄 Tally Extracted Text</h2>
-
-<pre id="tallyOutput"></pre>
-
-</div>
-
-
-<div class="card">
-
-<h2>🏦 Bank Extracted Text</h2>
-
-<pre id="bankOutput"></pre>
-
-</div>
-
-
-<div class="card">
-
-<h2>🔎 Detected Transactions</h2>
+<h2>🔎 Tally vs Bank Result</h2>
 
 <div class="table-wrap">
 
 <table>
 
 <thead>
+<tr>
+<th>#</th>
+<th>Tally Date</th>
+<th>Tally Amount</th>
+<th>Type</th>
+<th>Tally Narration</th>
+<th>Bank Match</th>
+<th>Bank Date</th>
+<th>Status</th>
+</tr>
+</thead>
 
+<tbody id="resultBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🔴 Entries Missing in Bank</h2>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
 <tr>
 <th>#</th>
 <th>Date</th>
@@ -270,15 +310,28 @@ Dono PDF select karein.
 <th>Type</th>
 <th>Narration</th>
 </tr>
-
 </thead>
 
-<tbody id="transactions"></tbody>
+<tbody id="missingBody"></tbody>
 
 </table>
 
 </div>
 
+</div>
+
+
+<div class="card">
+
+<h2>📄 Raw Tally Text</h2>
+<pre id="tallyRaw"></pre>
+</div>
+
+
+<div class="card">
+
+<h2>🏦 Raw Bank Text</h2>
+<pre id="bankRaw"></pre>
 </div>
 
 </div>
@@ -287,6 +340,14 @@ Dono PDF select karein.
 
 
 <script>
+
+if(window.pdfjsLib){
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+}
+
 
 const tallyFile =
 document.getElementById("tallyFile");
@@ -303,507 +364,869 @@ document.getElementById("status");
 const progressBar =
 document.getElementById("progressBar");
 
-const result =
-document.getElementById("result");
+const resultSection =
+document.getElementById("resultSection");
 
-const tallyOutput =
-document.getElementById("tallyOutput");
+const resultBody =
+document.getElementById("resultBody");
 
-const bankOutput =
-document.getElementById("bankOutput");
+const missingBody =
+document.getElementById("missingBody");
 
-const summary =
-document.getElementById("summary");
+const tallyRaw =
+document.getElementById("tallyRaw");
 
-const transactions =
-document.getElementById("transactions");
-
-
-if(window.pdfjsLib){
-
- pdfjsLib.GlobalWorkerOptions.workerSrc =
- "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-}
+const bankRaw =
+document.getElementById("bankRaw");
 
 
 function status(text){
- statusBox.innerHTML=text;
+    statusBox.innerHTML = text;
 }
 
 
 function progress(value){
- progressBar.style.width=value+"%";
+    progressBar.style.width =
+    Math.max(0,Math.min(100,value))+"%";
 }
 
 
-/*
-Read selectable text from PDF
-*/
+/* --------------------------------
+   PDF TEXT EXTRACTION
+-------------------------------- */
 
-async function readPDF(file,label){
+async function extractPDFText(file,label){
 
- const buffer=await file.arrayBuffer();
+    const buffer =
+    await file.arrayBuffer();
 
- const pdf=await pdfjsLib.getDocument({
-  data:buffer
- }).promise;
+    const pdf =
+    await pdfjsLib.getDocument({
+        data:buffer
+    }).promise;
 
- let text="";
+    let pages=[];
 
- for(let p=1;p<=pdf.numPages;p++){
+    for(let p=1;p<=pdf.numPages;p++){
 
-  status(
-   "📖 "+label+
-   " reading... Page "+
-   p+" / "+pdf.numPages
-  );
+        status(
+            "📖 "+label+
+            " reading page "+
+            p+" / "+pdf.numPages
+        );
 
-  const page=await pdf.getPage(p);
+        const page =
+        await pdf.getPage(p);
 
-  const content=
-   await page.getTextContent();
+        const content =
+        await page.getTextContent();
 
-  const pageText=
-   content.items
-   .map(x=>x.str)
-   .join(" ");
+        const items =
+        content.items.map(x=>x.str);
 
-  text+=
-   "\n--- PAGE "+p+" ---\n"+
-   pageText;
+        pages.push({
+            page:p,
+            text:items.join(" ")
+        });
 
-  progress(
-   Math.round((p/pdf.numPages)*35)
-  );
- }
+        progress(
+            (p/pdf.numPages)*35
+        );
+    }
 
- return text;
+    return pages;
 }
 
 
-/*
-Render PDF page for OCR
-*/
+/* --------------------------------
+   OCR FALLBACK
+-------------------------------- */
 
 async function ocrPDF(file,label){
 
- const buffer=await file.arrayBuffer();
+    const buffer =
+    await file.arrayBuffer();
 
- const pdf=await pdfjsLib.getDocument({
-  data:buffer
- }).promise;
+    const pdf =
+    await pdfjsLib.getDocument({
+        data:buffer
+    }).promise;
 
- let text="";
+    let pages=[];
 
- for(let p=1;p<=pdf.numPages;p++){
+    for(let p=1;p<=pdf.numPages;p++){
 
-  status(
-   "📷 OCR "+label+
-   "... Page "+p+
-   " / "+pdf.numPages
-  );
+        status(
+            "📷 OCR "+label+
+            " page "+p+
+            " / "+pdf.numPages
+        );
 
-  const page=await pdf.getPage(p);
+        const page =
+        await pdf.getPage(p);
 
-  const viewport=
-   page.getViewport({scale:1.5});
+        const viewport =
+        page.getViewport({scale:1.5});
 
-  const canvas=
-   document.createElement("canvas");
+        const canvas =
+        document.createElement("canvas");
 
-  const context=
-   canvas.getContext("2d");
+        canvas.width =
+        viewport.width;
 
-  canvas.width=viewport.width;
-  canvas.height=viewport.height;
+        canvas.height =
+        viewport.height;
 
-  await page.render({
-   canvasContext:context,
-   viewport:viewport
-  }).promise;
+        const context =
+        canvas.getContext("2d");
 
-  const resultOCR=
-   await Tesseract.recognize(
-    canvas,
-    "eng",
-    {
-     logger:function(m){
+        await page.render({
+            canvasContext:context,
+            viewport:viewport
+        }).promise;
 
-      if(m.status==="recognizing text"){
+        const ocr =
+        await Tesseract.recognize(
+            canvas,
+            "eng"
+        );
 
-       status(
-        "📷 OCR "+label+
-        "... Page "+p+
-        " ("+
-        Math.round(m.progress*100)+
-        "%)"
-       );
-      }
+        pages.push({
+            page:p,
+            text:ocr.data.text
+        });
 
-     }
+        progress(
+            35+(p/pdf.numPages)*35
+        );
     }
-   );
 
-  text+=
-   "\n--- OCR PAGE "+p+" ---\n"+
-   resultOCR.data.text;
-
-  progress(
-   35+
-   Math.round((p/pdf.numPages)*35)
-  );
- }
-
- return text;
+    return pages;
 }
 
 
-/*
-Date detection
-*/
+/* --------------------------------
+   NORMALIZE
+-------------------------------- */
 
-function getDate(text){
+function normalize(text){
 
- const patterns=[
-
-  /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/,
-
-  /\b\d{1,2}\s+[A-Za-z]{3}\s+\d{2,4}\b/,
-
-  /\b\d{1,2}\s+[A-Za-z]{3,}\s+\d{2,4}\b/
-
- ];
-
- for(const pattern of patterns){
-
-  const match=text.match(pattern);
-
-  if(match)
-   return match[0];
-
- }
-
- return "";
-}
-
-
-/*
-Amount detection
-*/
-
-function getAmounts(text){
-
- const regex=
- /(?:₹|Rs\.?|INR)?\s*\d[\d,]*(?:\.\d{1,2})?/gi;
-
- const matches=text.match(regex)||[];
-
- return matches
- .map(x=>
-  parseFloat(
-   x.replace(/₹|Rs\.?|INR/gi,"")
+    return String(text || "")
+    .toLowerCase()
+    .replace(/[₹]/g,"")
+    .replace(/\brs\.?\b/gi,"")
+    .replace(/\binr\b/gi,"")
     .replace(/,/g,"")
-    .trim()
-  )
- )
- .filter(x=>!isNaN(x) && x>0);
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+
+/* --------------------------------
+   DATE
+-------------------------------- */
+
+function findDate(text){
+
+    const patterns=[
+
+        /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/,
+
+        /\b\d{1,2}\s+[A-Za-z]{3}\s+\d{2,4}\b/,
+
+        /\b\d{1,2}\s+[A-Za-z]{3,9}\s+\d{2,4}\b/,
+
+        /\b\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/
+
+    ];
+
+    for(const p of patterns){
+
+        const m=text.match(p);
+
+        if(m) return m[0];
+
+    }
+
+    return "";
+}
+
+
+/* --------------------------------
+   AMOUNTS
+-------------------------------- */
+
+function findAmounts(text){
+
+    const clean =
+    String(text)
+    .replace(/,/g,"");
+
+    const matches =
+    clean.match(
+        /(?:₹|rs\.?|inr)?\s*\d+(?:\.\d{1,2})?/gi
+    ) || [];
+
+    const values=[];
+
+    for(const item of matches){
+
+        const n =
+        parseFloat(
+            item
+            .replace(/₹|rs\.?|inr/gi,"")
+            .trim()
+        );
+
+        if(!isNaN(n) && n>0){
+            values.push(n);
+        }
+    }
+
+    return values;
+}
+
+
+/* --------------------------------
+   TYPE
+-------------------------------- */
+
+function findType(text){
+
+    const t =
+    normalize(text);
+
+    if(
+        /\bdebit\b/.test(t) ||
+        /\bwithdrawal\b/.test(t) ||
+        /\bwithdraw\b/.test(t) ||
+        /\bdr\b/.test(t) ||
+        /\bby\b/.test(t)
+    ){
+        return "Debit";
+    }
+
+    if(
+        /\bcredit\b/.test(t) ||
+        /\bdeposit\b/.test(t) ||
+        /\bcr\b/.test(t) ||
+        /\bto\b/.test(t)
+    ){
+        return "Credit";
+    }
+
+    return "";
+}
+
+
+/* --------------------------------
+   DATE KEY
+-------------------------------- */
+
+function dateKey(date){
+
+    if(!date) return null;
+
+    let m =
+    date.match(
+        /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/
+    );
+
+    if(m){
+
+        let d=parseInt(m[1]);
+        let mo=parseInt(m[2]);
+        let y=parseInt(m[3]);
+
+        if(y<100) y+=2000;
+
+        return new Date(y,mo-1,d);
+    }
+
+    return null;
+}
+
+
+function daysDifference(a,b){
+
+    const da=dateKey(a);
+    const db=dateKey(b);
+
+    if(!da || !db) return null;
+
+    return Math.abs(
+        Math.round(
+            (da-db)/(1000*60*60*24)
+        )
+    );
+}
+
+
+/* --------------------------------
+   NARRATION SIMILARITY
+-------------------------------- */
+
+function words(text){
+
+    return normalize(text)
+    .split(" ")
+    .filter(x=>x.length>=3);
+}
+
+
+function narrationScore(a,b){
+
+    const wa=words(a);
+    const wb=words(b);
+
+    if(!wa.length || !wb.length)
+        return 0;
+
+    let common=0;
+
+    for(const x of wa){
+
+        if(wb.includes(x)){
+            common++;
+        }
+
+    }
+
+    return common /
+    Math.max(wa.length,wb.length);
+}
+
+
+/* --------------------------------
+   BUILD TRANSACTIONS
+-------------------------------- */
+
+function buildTransactions(pages){
+
+    let all=[];
+
+    for(const page of pages){
+
+        const raw =
+        page.text
+        .replace(/\r/g," ");
+
+        /*
+        Split around probable dates.
+        */
+
+        const dateRegex =
+        /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g;
+
+        const matches =
+        [...raw.matchAll(dateRegex)];
+
+        if(matches.length){
+
+            for(let i=0;i<matches.length;i++){
+
+                const start =
+                matches[i].index;
+
+                const end =
+                i+1<matches.length
+                ? matches[i+1].index
+                : raw.length;
+
+                const block =
+                raw.substring(start,end).trim();
+
+                const date =
+                findDate(block);
+
+                const amounts =
+                findAmounts(block);
+
+                if(!date || !amounts.length)
+                    continue;
+
+                /*
+                Usually last numeric value is
+                the transaction amount or balance.
+                We use the largest candidate first,
+                then allow matching engine to decide.
+                */
+
+                let amount =
+                amounts[amounts.length-1];
+
+                const type =
+                findType(block);
+
+                all.push({
+
+                    page:page.page,
+
+                    date:date,
+
+                    amount:amount,
+
+                    type:type,
+
+                    narration:block
+
+                });
+            }
+
+        }else{
+
+            /*
+            Fallback for OCR/other layouts.
+            Group lines around amounts.
+            */
+
+            const lines =
+            raw.split(/\n/)
+            .map(x=>x.trim())
+            .filter(Boolean);
+
+            for(let i=0;i<lines.length;i++){
+
+                const block =
+                lines.slice(
+                    Math.max(0,i-1),
+                    Math.min(lines.length,i+2)
+                ).join(" ");
+
+                const date =
+                findDate(block);
+
+                const amounts =
+                findAmounts(block);
+
+                if(date && amounts.length){
+
+                    all.push({
+
+                        page:page.page,
+
+                        date:date,
+
+                        amount:amounts[amounts.length-1],
+
+                        type:findType(block),
+
+                        narration:block
+
+                    });
+
+                }
+            }
+        }
+    }
+
+    return removeDuplicates(all);
+}
+
+
+/* --------------------------------
+   REMOVE DUPLICATES
+-------------------------------- */
+
+function removeDuplicates(list){
+
+    const result=[];
+    const seen=new Set();
+
+    for(const x of list){
+
+        const key =
+        normalize(
+            x.date+"|"+
+            x.amount+"|"+
+            x.narration.substring(0,100)
+        );
+
+        if(!seen.has(key)){
+
+            seen.add(key);
+            result.push(x);
+
+        }
+    }
+
+    return result;
+}
+
+
+/* --------------------------------
+   MATCHING ENGINE
+-------------------------------- */
+
+function matchTallyToBank(tally,bank){
+
+    const results=[];
+
+    const usedBank =
+    new Set();
+
+    let matched=0;
+    let missing=0;
+    let possible=0;
+
+    for(let i=0;i<tally.length;i++){
+
+        const t=tally[i];
+
+        let best=null;
+        let bestScore=0;
+        let bestIndex=-1;
+
+        for(let j=0;j<bank.length;j++){
+
+            if(usedBank.has(j))
+                continue;
+
+            const b=bank[j];
+
+            let score=0;
+
+            /*
+            Amount
+            */
+
+            if(
+                t.amount &&
+                b.amount &&
+                Math.abs(
+                    t.amount-b.amount
+                ) < 0.01
+            ){
+                score+=60;
+            }else{
+                continue;
+            }
+
+            /*
+            Date
+            */
+
+            const days =
+            daysDifference(
+                t.date,
+                b.date
+            );
+
+            if(days===0){
+                score+=25;
+            }
+            else if(days!==null && days<=2){
+                score+=15;
+            }
+
+
+            /*
+            Debit / Credit
+            */
+
+            if(
+                t.type &&
+                b.type
+            ){
+
+                if(t.type===b.type){
+                    score+=10;
+                }
+
+            }
+
+
+            /*
+            Narration
+            */
+
+            const ns =
+            narrationScore(
+                t.narration,
+                b.narration
+            );
+
+            if(ns>=0.30)
+                score+=5;
+
+
+            if(score>bestScore){
+
+                bestScore=score;
+                best=b;
+                bestIndex=j;
+
+            }
+        }
+
+
+        let status="MISSING";
+
+        if(best && bestScore>=80){
+
+            status="MATCHED";
+            matched++;
+
+            usedBank.add(bestIndex);
+
+        }
+        else if(best && bestScore>=60){
+
+            status="POSSIBLE";
+            possible++;
+
+        }
+        else{
+
+            missing++;
+
+        }
+
+
+        results.push({
+
+            tally:t,
+
+            bank:best,
+
+            score:Math.round(bestScore),
+
+            status:status
+
+        });
+
+    }
+
+
+    return {
+
+        results:results,
+
+        matched:matched,
+
+        missing:missing,
+
+        possible:possible
+
+    };
+}
+
+
+/* --------------------------------
+   HTML ESCAPE
+-------------------------------- */
+
+function esc(text){
+
+    return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
 
-/*
-Debit/Credit detection
-*/
+/* --------------------------------
+   DISPLAY
+-------------------------------- */
 
-function getType(text){
+function displayResults(data){
 
- const t=text.toLowerCase();
-
- if(
-  t.includes("debit") ||
-  t.includes("withdrawal") ||
-  /\bdr\b/.test(t) ||
-  t.includes("withdraw")
- )
- return "Debit";
-
- if(
-  t.includes("credit") ||
-  t.includes("deposit") ||
-  /\bcr\b/.test(t)
- )
- return "Credit";
-
- return "";
-}
+    resultBody.innerHTML="";
+    missingBody.innerHTML="";
 
 
-/*
-Create rough transactions
-*/
+    data.results.forEach((r,index)=>{
 
-function detectTransactions(text){
+        const tr =
+        document.createElement("tr");
 
- const lines=
- text
- .split(/\r?\n/)
- .map(x=>x.trim())
- .filter(x=>x.length>0);
+        let cls="missing";
 
- const output=[];
+        if(r.status==="MATCHED")
+            cls="matched";
 
- for(let i=0;i<lines.length;i++){
-
-  const line=lines[i];
-
-  const date=getDate(line);
-
-  const amounts=getAmounts(line);
-
-  if(date && amounts.length){
-
-   output.push({
-
-    date:date,
-
-    amount:amounts[amounts.length-1],
-
-    type:getType(line),
-
-    narration:line
-
-   });
-
-  }
-
- }
-
- return output;
-}
+        if(r.status==="POSSIBLE")
+            cls="possible";
 
 
-/*
-Display transactions
-*/
+        tr.innerHTML=`
 
-function showTransactions(list){
+        <td>${index+1}</td>
 
- transactions.innerHTML="";
+        <td>${esc(r.tally.date)}</td>
 
- list.forEach((item,index)=>{
+        <td>₹${Number(r.tally.amount).toFixed(2)}</td>
 
-  const tr=
-  document.createElement("tr");
+        <td>${esc(r.tally.type || "-")}</td>
 
-  tr.innerHTML=`
+        <td>${esc(r.tally.narration)}</td>
 
-   <td>${index+1}</td>
+        <td>
+        ${
+            r.bank
+            ?
+            "₹"+Number(r.bank.amount).toFixed(2)
+            +"<br>"+esc(r.bank.narration)
+            :
+            "-"
+        }
+        </td>
 
-   <td>${item.date || "-"}</td>
+        <td>
+        ${r.bank ? esc(r.bank.date) : "-"}
+        </td>
 
-   <td>₹${item.amount.toFixed(2)}</td>
+        <td class="${cls}">
+        ${r.status}
+        <br>
+        <small>Score: ${r.score}</small>
+        </td>
 
-   <td>${item.type || "-"}</td>
+        `;
 
-   <td>${escapeHTML(item.narration)}</td>
+        resultBody.appendChild(tr);
 
-  `;
 
-  transactions.appendChild(tr);
+        if(r.status==="MISSING"){
 
- });
+            const mr =
+            document.createElement("tr");
+
+            mr.innerHTML=`
+
+            <td>${index+1}</td>
+            <td>${esc(r.tally.date)}</td>
+            <td>₹${Number(r.tally.amount).toFixed(2)}</td>
+            <td>${esc(r.tally.type || "-")}</td>
+            <td>${esc(r.tally.narration)}</td>
+
+            `;
+
+            missingBody.appendChild(mr);
+
+        }
+
+    });
+
+
+    document.getElementById("total")
+    .textContent=data.results.length;
+
+    document.getElementById("matched")
+    .textContent=data.matched;
+
+    document.getElementById("missing")
+    .textContent=data.missing;
+
+    document.getElementById("possible")
+    .textContent=data.possible;
+
+    resultSection.classList.remove("hidden");
 
 }
 
 
-function escapeHTML(text){
-
- return String(text)
- .replace(/&/g,"&amp;")
- .replace(/</g,"&lt;")
- .replace(/>/g,"&gt;")
- .replace(/"/g,"&quot;")
- .replace(/'/g,"&#039;");
-
-}
-
-
-/*
-MAIN ANALYSIS
-*/
+/* --------------------------------
+   MAIN BUTTON
+-------------------------------- */
 
 analyzeBtn.addEventListener(
- "click",
- async function(){
+"click",
+async function(){
 
-  if(!tallyFile.files.length){
+    if(!tallyFile.files.length){
 
-   status("❌ Tally PDF select karein.");
+        status("❌ Tally PDF select karein.");
+        return;
+    }
 
-   return;
-  }
+    if(!bankFile.files.length){
 
-  if(!bankFile.files.length){
+        status("❌ Original Bank PDF select karein.");
+        return;
+    }
 
-   status("❌ Original Bank PDF select karein.");
+    if(!window.pdfjsLib){
 
-   return;
-  }
+        status(
+        "❌ PDF engine load nahi hua. Internet check karein."
+        );
 
-  if(!window.pdfjsLib){
+        return;
+    }
 
-   status(
-    "❌ PDF engine load nahi hua. Internet connection check karein."
-   );
+    analyzeBtn.disabled=true;
 
-   return;
-  }
+    resultSection.classList.add("hidden");
 
-  analyzeBtn.disabled=true;
+    progress(0);
 
-  result.classList.add("hidden");
+    try{
 
-  progress(0);
+        status("📖 Tally PDF read ho rahi hai...");
 
-  try{
-
-   /*
-   STEP 1
-   */
-
-   let tallyText=
-   await readPDF(
-    tallyFile.files[0],
-    "Tally PDF"
-   );
-
-   /*
-   If no text, OCR
-   */
-
-   if(tallyText.replace(
-    /--- PAGE \d+ ---/g,""
-   ).trim().length<30){
-
-    status(
-     "📷 Tally PDF scanned hai. OCR start..."
-    );
-
-    tallyText=
-    await ocrPDF(
-     tallyFile.files[0],
-     "Tally PDF"
-    );
-
-   }
+        let tallyPages =
+        await extractPDFText(
+            tallyFile.files[0],
+            "Tally"
+        );
 
 
-   /*
-   STEP 2
-   */
+        /*
+        OCR if selectable text is insufficient
+        */
 
-   let bankText=
-   await readPDF(
-    bankFile.files[0],
-    "Bank PDF"
-   );
-
-   if(bankText.replace(
-    /--- PAGE \d+ ---/g,""
-   ).trim().length<30){
-
-    status(
-     "📷 Bank PDF scanned hai. OCR start..."
-    );
-
-    bankText=
-    await ocrPDF(
-     bankFile.files[0],
-     "Bank PDF"
-    );
-
-   }
+        const tallyLength =
+        tallyPages
+        .map(x=>x.text)
+        .join(" ")
+        .trim()
+        .length;
 
 
-   /*
-   STEP 3
-   */
+        if(tallyLength<50){
 
-   status(
-    "🔎 Transactions identify ki ja rahi hain..."
-   );
+            status(
+            "📷 Tally scanned PDF detected. OCR start..."
+            );
 
-   progress(80);
+            tallyPages =
+            await ocrPDF(
+                tallyFile.files[0],
+                "Tally"
+            );
 
-   const tallyTransactions=
-   detectTransactions(tallyText);
-
-   const bankTransactions=
-   detectTransactions(bankText);
+        }
 
 
-   /*
-   STEP 4
-   */
+        status("📖 Bank PDF read ho rahi hai...");
 
-   tallyOutput.textContent=
-   tallyText || "No text found.";
-
-   bankOutput.textContent=
-   bankText || "No text found.";
+        let bankPages =
+        await extractPDFText(
+            bankFile.files[0],
+            "Bank"
+        );
 
 
-   showTransactions(
-    tallyTransactions
-   );
+        const bankLength =
+        bankPages
+        .map(x=>x.text)
+        .join(" ")
+        .trim()
+        .length;
 
 
-   summary.innerHTML=`
+        if(bankLength<50){
 
-   <p>
-   <b>Tally Transactions:</b>
-   ${tallyTransactions.length}
-   </p>
+            status(
+            "📷 Bank scanned PDF detected. OCR start..."
+            );
 
-   <p>
-   <b>Bank Transactions:</b>
-   ${bankTransactions.length}
-   </p>
-
-   <p class="small">
-   PDF reading complete. Next version mein
-   Tally vs Bank automatic matching add hoga.
-   </p>
-
-   `;
-
-
-   result.classList.remove("hidden");
-
-   progress(100);
-
-   status(
-    "✅ PDF reading + OCR analysis complete."
-   );
-
-  }
-  catch(error){
-
-   console.error(error);
-
-   status(
-    "❌ Error: "+
-    error.message
-   );
-
-  }
-
-  analyzeBtn.disabled=false;
-
- });
-
-</script>
-
-</body>
-    </html>
+            bankPages =
+            await ocrPDF(
+                bankFile.files[0],
+                "Bank"
+            );
