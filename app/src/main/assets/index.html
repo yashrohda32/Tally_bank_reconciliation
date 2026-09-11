@@ -7,145 +7,195 @@
 <title>Tally Bank Reconciliation</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
-
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f2f4f7;
-    color:#222;
+* {
+    box-sizing: border-box;
 }
 
-.container{
-    max-width:900px;
-    margin:auto;
-    padding:16px;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
 }
 
-h1{text-align:center}
-
-.card{
-    background:white;
-    padding:18px;
-    margin:15px 0;
-    border-radius:14px;
-    box-shadow:0 3px 12px rgba(0,0,0,.08);
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 15px;
 }
 
-label{
-    display:block;
-    font-weight:bold;
-    margin-bottom:8px;
+h1 {
+    text-align: center;
+    margin: 10px 0 5px;
 }
 
-input[type=file]{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
 }
 
-button{
-    width:100%;
-    padding:16px;
-    border:0;
-    border-radius:10px;
-    background:#1769e0;
-    color:white;
-    font-size:17px;
-    font-weight:bold;
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
 }
 
-button:disabled{
-    background:#888;
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
-#status{
-    display:none;
-    margin-top:15px;
-    padding:13px;
-    border-radius:8px;
-    background:#eef4ff;
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
 }
 
-.success{
-    background:#e9f8ed!important;
-    color:#08752b;
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
-.error{
-    background:#ffe9e9!important;
-    color:#a00000;
+.analyze {
+    background: #1769e0;
+    color: white;
 }
 
-.summary{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
+.export {
+    background: #198754;
+    color: white;
 }
 
-.box{
-    background:#f4f5f6;
-    padding:15px;
-    text-align:center;
-    border-radius:10px;
+button:disabled {
+    background: #aaa;
 }
 
-.box b{
-    display:block;
-    font-size:25px;
-    margin-top:5px;
+#status {
+    background: #111;
+    color: #00ff66;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    min-height: 60px;
+    margin-top: 15px;
 }
 
-.tableBox{
-    overflow-x:auto;
+.progress {
+    width: 100%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:650px;
+.progressBar {
+    height: 100%;
+    width: 0%;
+    background: #1769e0;
+    transition: width .2s;
 }
 
-th,td{
-    border:1px solid #ddd;
-    padding:9px;
-    font-size:13px;
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
 }
 
-th{
-    background:#eee;
+.box {
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    background: #eee;
 }
 
-.MATCHED{
-    color:green;
-    font-weight:bold;
+.box strong {
+    display: block;
+    font-size: 25px;
 }
 
-.POSSIBLE{
-    color:#b36b00;
-    font-weight:bold;
+.match {
+    background: #d9f7df;
 }
 
-.MISSING{
-    color:red;
-    font-weight:bold;
+.missing {
+    background: #ffdede;
 }
 
-pre{
-    background:#111;
-    color:white;
-    padding:12px;
-    border-radius:8px;
-    overflow:auto;
-    max-height:300px;
+.extra {
+    background: #fff0c2;
 }
 
-@media(max-width:600px){
-    .summary{
-        grid-template-columns:1fr;
+.tableWrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th, td {
+    padding: 9px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #eee;
+}
+
+tr.matched {
+    background: #e8f8eb;
+}
+
+tr.missingRow {
+    background: #ffe1e1;
+}
+
+tr.extraRow {
+    background: #fff2c7;
+}
+
+.small {
+    font-size: 12px;
+    color: #666;
+}
+
+.warning {
+    color: #b00020;
+    font-weight: bold;
+}
+
+.success {
+    color: #137333;
+    font-weight: bold;
+}
+
+@media(max-width:600px) {
+    .summary {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    h1 {
+        font-size: 24px;
     }
 }
 </style>
@@ -157,234 +207,520 @@ pre{
 
 <h1>🏦 Tally Bank Reconciliation</h1>
 
-<div class="card">
-
-<label>1️⃣ Tally Bank Statement</label>
-
-<input
-    id="tallyFile"
-    type="file"
-    accept=".pdf,application/pdf"
->
-
+<div class="subtitle">
+Compare Tally Bank PDF with Original Bank Statement
 </div>
 
 <div class="card">
 
-<label>2️⃣ Original Bank Statement</label>
+<label>1️⃣ Tally Bank Statement PDF</label>
+<input id="tallyFile" type="file" accept=".pdf">
 
-<input
-    id="bankFile"
-    type="file"
-    accept=".pdf,application/pdf"
->
+<br><br>
 
-</div>
+<label>2️⃣ Original / Normal Bank Statement PDF</label>
+<input id="bankFile" type="file" accept=".pdf">
 
-<div class="card">
-
-<button
-    id="analyzeBtn"
-    type="button"
-    onclick="startAnalysis()"
->
-🔍 Analyze & Match Entries
+<button class="analyze" onclick="startAnalysis()">
+🔍 Analyze & Match
 </button>
 
-<div id="status"></div>
+<div class="progress">
+<div id="progressBar" class="progressBar"></div>
+</div>
+
+<div id="status">
+Waiting for PDF files...
+</div>
 
 </div>
 
-<div id="result"></div>
+<div id="summaryCard" class="card" style="display:none">
+
+<h2>📊 Reconciliation Summary</h2>
+
+<div class="summary">
+
+<div class="box">
+<strong id="tallyCount">0</strong>
+Tally Entries
+</div>
+
+<div class="box">
+<strong id="bankCount">0</strong>
+Bank Entries
+</div>
+
+<div class="box match">
+<strong id="matchedCount">0</strong>
+Matched
+</div>
+
+<div class="box missing">
+<strong id="missingCount">0</strong>
+Missing
+</div>
 
 </div>
 
+</div>
+
+<div id="resultCard" class="card" style="display:none">
+
+<h2>🔎 Reconciliation Result</h2>
+
+<div class="tableWrap">
+
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Date</th>
+<th>Tally Description</th>
+<th>Tally Amount</th>
+<th>Bank Description</th>
+<th>Bank Amount</th>
+</tr>
+</thead>
+
+<tbody id="resultBody"></tbody>
+
+</table>
+
+</div>
+
+<button class="export" onclick="exportCSV()">
+📥 Export CSV
+</button>
+
+</div>
+
+<div id="tallyCard" class="card" style="display:none">
+
+<h2>📘 Detected Tally Entries</h2>
+
+<div class="tableWrap">
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Date</th>
+<th>Description</th>
+<th>Amount</th>
+</tr>
+</thead>
+
+<tbody id="tallyBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div id="bankCard" class="card" style="display:none">
+
+<h2>🏦 Detected Bank Entries</h2>
+
+<div class="tableWrap">
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Date</th>
+<th>Description</th>
+<th>Amount</th>
+</tr>
+</thead>
+
+<tbody id="bankBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
 
 <script>
 
-/* =====================================
-   BASIC SETUP
-===================================== */
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-if(typeof pdfjsLib !== "undefined"){
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+let finalResults = [];
+let tallyEntries = [];
+let bankEntries = [];
+
+function setStatus(text) {
+    document.getElementById("status").textContent = text;
+}
+
+function setProgress(value) {
+    document.getElementById("progressBar").style.width =
+        Math.min(100, Math.max(0, value)) + "%";
+}
+
+function normalizeText(text) {
+    return (text || "")
+        .replace(/\r/g, "\n")
+        .replace(/[ \t]+/g, " ")
+        .replace(/\n\s*\n+/g, "\n")
+        .trim();
 }
 
 
-/* =====================================
-   STATUS
-===================================== */
+/* -----------------------------------------
+   READ PDF TEXT
+----------------------------------------- */
 
-function showStatus(message,type){
+async function extractPDFText(file, type) {
 
-    var box =
-        document.getElementById("status");
+    const arrayBuffer = await file.arrayBuffer();
 
-    box.style.display = "block";
+    const pdf = await pdfjsLib.getDocument({
+        data: arrayBuffer
+    }).promise;
 
-    box.className = "";
+    let allText = "";
+    let pagesNeedingOCR = [];
 
-    if(type){
-        box.classList.add(type);
-    }
+    for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
 
-    box.innerText = message;
-}
-
-
-/* =====================================
-   READ PDF
-===================================== */
-
-async function readPDF(file,name){
-
-    if(!file){
-        throw new Error(name + " PDF select nahi ki gayi.");
-    }
-
-    if(typeof pdfjsLib === "undefined"){
-        throw new Error(
-            "PDF reader load nahi hua. Internet ON karke app dobara open karein."
+        setStatus(
+            `${type} PDF reading...\nPage ${pageNo} / ${pdf.numPages}`
         );
+
+        setProgress((pageNo / pdf.numPages) * 25);
+
+        const page = await pdf.getPage(pageNo);
+
+        const content = await page.getTextContent();
+
+        let pageText = content.items
+            .map(item => item.str)
+            .join(" ");
+
+        pageText = normalizeText(pageText);
+
+        allText += "\n" + pageText;
+
+        /*
+         If PDF has very little text,
+         consider it scanned/image PDF.
+        */
+
+        if (pageText.length < 30) {
+            pagesNeedingOCR.push(pageNo);
+        }
     }
 
-    showStatus(
-        "📖 " + name + " PDF read ho raha hai..."
+    /*
+       If almost entire PDF is empty,
+       OCR every page.
+    */
+
+    if (allText.replace(/\s/g, "").length < 100) {
+
+        pagesNeedingOCR = [];
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+            pagesNeedingOCR.push(i);
+        }
+    }
+
+    if (pagesNeedingOCR.length === 0) {
+
+        return {
+            text: allText,
+            pdf: pdf,
+            ocr: false
+        };
+    }
+
+    setStatus(
+        `${type} PDF scanned/image PDF detected.\n` +
+        `OCR required on ${pagesNeedingOCR.length} page(s)...`
     );
 
-    var buffer =
-        await file.arrayBuffer();
+    const ocrText = await OCRPages(
+        pdf,
+        pagesNeedingOCR,
+        type
+    );
 
-    var pdf =
-        await pdfjsLib.getDocument({
-            data:buffer
-        }).promise;
-
-    var allText = "";
-
-    for(
-        var pageNo=1;
-        pageNo<=pdf.numPages;
-        pageNo++
-    ){
-
-        showStatus(
-            "📖 " +
-            name +
-            " - Page " +
-            pageNo +
-            " / " +
-            pdf.numPages
-        );
-
-        var page =
-            await pdf.getPage(pageNo);
-
-        var content =
-            await page.getTextContent();
-
-        var items =
-            content.items || [];
-
-        var lines = {};
-
-        items.forEach(function(item){
-
-            var text =
-                (item.str || "").trim();
-
-            if(!text) return;
-
-            var y =
-                Math.round(item.transform[5]);
-
-            if(!lines[y]){
-                lines[y] = [];
-            }
-
-            lines[y].push({
-                x:item.transform[4],
-                text:text
-            });
-
-        });
-
-        var ys =
-            Object.keys(lines)
-            .map(Number)
-            .sort(function(a,b){
-                return b-a;
-            });
-
-        ys.forEach(function(y){
-
-            lines[y].sort(function(a,b){
-                return a.x-b.x;
-            });
-
-            allText +=
-                lines[y]
-                .map(function(x){
-                    return x.text;
-                })
-                .join(" ") +
-                "\n";
-        });
-
-        allText += "\n";
-    }
-
-    return allText;
+    return {
+        text: normalizeText(allText + "\n" + ocrText),
+        pdf: pdf,
+        ocr: true
+    };
 }
 
 
-/* =====================================
-   DATE
-===================================== */
+/* -----------------------------------------
+   OCR
+----------------------------------------- */
 
-function getDate(text){
+async function OCRPages(pdf, pages, type) {
 
-    var patterns = [
+    let worker = null;
+    let combinedOCR = "";
 
-        /(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/,
+    try {
 
-        /(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2})/
+        worker = await Tesseract.createWorker(
+            "eng",
+            1,
+            {
+                logger: message => {
+
+                    if (message.status) {
+
+                        let percent =
+                            message.progress
+                            ? Math.round(message.progress * 100)
+                            : 0;
+
+                        setStatus(
+                            `${type} OCR...\n` +
+                            `${message.status} ${percent}%`
+                        );
+                    }
+                }
+            }
+        );
+
+        for (let i = 0; i < pages.length; i++) {
+
+            const pageNo = pages[i];
+
+            setStatus(
+                `${type} OCR running...\n` +
+                `Page ${pageNo} / ${pdf.numPages}`
+            );
+
+            setProgress(
+                25 + ((i + 1) / pages.length) * 45
+            );
+
+            const page = await pdf.getPage(pageNo);
+
+            const viewport = page.getViewport({
+                scale: 1.6
+            });
+
+            const canvas =
+                document.createElement("canvas");
+
+            const context =
+                canvas.getContext("2d");
+
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            await page.render({
+                canvasContext: context,
+                viewport: viewport
+            }).promise;
+
+            const result =
+                await worker.recognize(canvas);
+
+            combinedOCR +=
+                "\n" +
+                (result.data.text || "");
+
+            canvas.width = 1;
+            canvas.height = 1;
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        setStatus(
+            "OCR Error:\n" +
+            error.message +
+            "\n\nInternet connection check karein."
+        );
+
+        throw error;
+
+    } finally {
+
+        if (worker) {
+            try {
+                await worker.terminate();
+            } catch(e) {}
+        }
+    }
+
+    return combinedOCR;
+}
+
+
+/* -----------------------------------------
+   DATE PARSER
+----------------------------------------- */
+
+function parseDate(value) {
+
+    if (!value) return null;
+
+    value = value.trim();
+
+    let m;
+
+    // DD/MM/YYYY
+    m = value.match(
+        /^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/
+    );
+
+    if (m) {
+
+        let d = Number(m[1]);
+        let mo = Number(m[2]);
+        let y = Number(m[3]);
+
+        if (y < 100) y += 2000;
+
+        if (
+            d >= 1 &&
+            d <= 31 &&
+            mo >= 1 &&
+            mo <= 12
+        ) {
+            return new Date(y, mo - 1, d);
+        }
+    }
+
+    // YYYY-MM-DD
+    m = value.match(
+        /^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/
+    );
+
+    if (m) {
+
+        return new Date(
+            Number(m[1]),
+            Number(m[2]) - 1,
+            Number(m[3])
+        );
+    }
+
+    return null;
+}
+
+
+function dateToString(date) {
+
+    if (!date) return "";
+
+    let d = String(date.getDate()).padStart(2, "0");
+
+    let m = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    let y = date.getFullYear();
+
+    return `${d}/${m}/${y}`;
+}
+
+
+/* -----------------------------------------
+   AMOUNT PARSER
+----------------------------------------- */
+
+function parseAmount(value) {
+
+    if (!value) return null;
+
+    let s = String(value)
+        .replace(/[₹$€£]/g, "")
+        .replace(/\s/g, "")
+        .trim();
+
+    let negative = false;
+
+    if (
+        s.includes("-") ||
+        /\bDR\b/i.test(s)
+    ) {
+        negative = true;
+    }
+
+    s = s.replace(/[^0-9.,-]/g, "");
+
+    /*
+       Indian / normal number format:
+       1,25,000.50
+       125000.50
+    */
+
+    if (
+        s.includes(",") &&
+        s.includes(".")
+    ) {
+        s = s.replace(/,/g, "");
+    } else if (
+        s.includes(",") &&
+        !s.includes(".")
+    ) {
+        let parts = s.split(",");
+
+        if (
+            parts.length > 1 &&
+            parts[parts.length - 1].length === 2
+        ) {
+            s = parts.slice(0, -1).join("") +
+                "." +
+                parts[parts.length - 1];
+        } else {
+            s = s.replace(/,/g, "");
+        }
+    }
+
+    let n = parseFloat(s);
+
+    if (isNaN(n)) return null;
+
+    return negative ? -Math.abs(n) : Math.abs(n);
+}
+
+
+/* -----------------------------------------
+   DATE FINDER
+----------------------------------------- */
+
+function findDate(line) {
+
+    const patterns = [
+
+        /\b\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{4}\b/,
+
+        /\b\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2}\b/,
+
+        /\b\d{4}[\/\-\.]\d{1,2}[\/\-\.]\d{1,2}\b/
 
     ];
 
-    for(var i=0;i<patterns.length;i++){
+    for (let p of patterns) {
 
-        var m =
-            text.match(patterns[i]);
+        const match = line.match(p);
 
-        if(m){
+        if (match) {
 
-            var d =
-                parseInt(m[1]);
+            const date =
+                parseDate(match[0]);
 
-            var month =
-                parseInt(m[2]);
-
-            var year =
-                parseInt(m[3]);
-
-            if(year<100){
-                year += 2000;
-            }
-
-            if(
-                d>=1 &&
-                d<=31 &&
-                month>=1 &&
-                month<=12
-            ){
-
-                return new Date(
-                    year,
-                    month-1,
-                    d
-                );
+            if (date) {
+                return {
+                    raw: match[0],
+                    date: date
+                };
             }
         }
     }
@@ -393,735 +729,406 @@ function getDate(text){
 }
 
 
-/* =====================================
-   AMOUNT
-===================================== */
+/* -----------------------------------------
+   AMOUNT FINDER
+----------------------------------------- */
 
-function getAmounts(text){
+function findAmounts(line) {
 
-    var matches =
-        text.match(
-            /(?:₹|Rs\.?|INR)?\s*\d[\d,]*(?:\.\d{1,2})?/gi
-        ) || [];
+    /*
+       Amount examples:
+       1,250.00
+       1250.00
+       10,00,000.00
+       500
+    */
 
-    var values=[];
+    const regex =
+        /(?:₹|Rs\.?|INR)?\s*-?\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?(?!\d)/gi;
 
-    matches.forEach(function(x){
+    let matches =
+        line.match(regex) || [];
 
-        x =
-            x.replace(/₹/g,"")
-             .replace(/Rs\.?/ig,"")
-             .replace(/INR/ig,"")
-             .replace(/,/g,"")
-             .trim();
+    let amounts = [];
 
-        var n =
-            parseFloat(x);
+    for (let m of matches) {
 
-        if(!isNaN(n) && n>0){
-            values.push(n);
+        let amount = parseAmount(m);
+
+        if (
+            amount !== null &&
+            Math.abs(amount) > 0
+        ) {
+            amounts.push(amount);
         }
+    }
 
-    });
-
-    return values;
+    return amounts;
 }
 
 
-/* =====================================
-   TYPE
-===================================== */
+/* -----------------------------------------
+   TRANSACTION DETECTOR
+----------------------------------------- */
 
-function getType(text){
+function detectTransactions(text, type) {
 
-    var t =
-        text.toLowerCase();
+    text = normalizeText(text);
 
-    if(
-        t.includes("withdraw") ||
-        t.includes("debit") ||
-        t.includes(" dr") ||
-        /\bby\b/.test(t)
-    ){
-        return "DEBIT";
-    }
+    let lines =
+        text.split("\n")
+        .map(x => x.trim())
+        .filter(x => x.length > 0);
 
-    if(
-        t.includes("deposit") ||
-        t.includes("credit") ||
-        t.includes(" cr") ||
-        /\bto\b/.test(t)
-    ){
-        return "CREDIT";
-    }
+    let entries = [];
 
-    return "";
-}
+    let current = null;
 
+    for (let line of lines) {
 
-/* =====================================
-   TRANSACTIONS
-===================================== */
+        const dateInfo =
+            findDate(line);
 
-function detectTransactions(text){
+        const amounts =
+            findAmounts(line);
 
-    var lines =
-        text.split(/\r?\n/)
-        .map(function(x){
-            return x.trim();
-        })
-        .filter(function(x){
-            return x.length>0;
-        });
+        /*
+          New transaction normally starts
+          when a date appears.
+        */
 
-    var entries=[];
-    var current=null;
+        if (dateInfo) {
 
-    lines.forEach(function(line){
-
-        var date =
-            getDate(line);
-
-        if(date){
-
-            if(current){
-                saveEntry(
-                    current,
-                    entries
-                );
+            if (current && current.amount !== null) {
+                entries.push(current);
             }
 
-            current={
-                date:date,
-                dateText:line,
-                text:line
+            current = {
+                date: dateInfo.date,
+                description: line,
+                amount: amounts.length
+                    ? amounts[amounts.length - 1]
+                    : null,
+                raw: line
             };
 
-        }else if(current){
-
-            current.text +=
-                " " + line;
+            continue;
         }
 
-    });
+        /*
+          Continue current transaction.
+        */
 
-    if(current){
-        saveEntry(
-            current,
-            entries
-        );
+        if (current) {
+
+            if (amounts.length) {
+
+                current.amount =
+                    amounts[amounts.length - 1];
+            }
+
+            current.description +=
+                " " + line;
+        }
     }
 
-    return removeDuplicates(entries);
-}
-
-
-/* =====================================
-   SAVE ENTRY
-===================================== */
-
-function saveEntry(entry,list){
-
-    var amounts =
-        getAmounts(entry.text);
-
-    if(amounts.length===0){
-        return;
+    if (
+        current &&
+        current.amount !== null
+    ) {
+        entries.push(current);
     }
 
-    entry.amount =
-        amounts[amounts.length-1];
+    /*
+       Remove obvious non-transaction lines.
+    */
 
-    entry.type =
-        getType(entry.text);
+    entries = entries.filter(e => {
 
-    list.push(entry);
-}
+        if (!e.date) return false;
 
-
-/* =====================================
-   DUPLICATES
-===================================== */
-
-function removeDuplicates(list){
-
-    var seen={};
-
-    return list.filter(function(e){
-
-        var key =
-            e.dateText +
-            "|" +
-            e.amount +
-            "|" +
-            e.type;
-
-        if(seen[key]){
+        if (
+            e.amount === null ||
+            isNaN(e.amount)
+        ) {
             return false;
         }
 
-        seen[key]=true;
+        let d =
+            e.description.toLowerCase();
+
+        /*
+          Avoid common statement headers.
+        */
+
+        const badWords = [
+            "account number",
+            "customer id",
+            "statement period",
+            "opening balance",
+            "closing balance"
+        ];
+
+        for (let word of badWords) {
+            if (d.includes(word)) {
+                return false;
+            }
+        }
 
         return true;
     });
-}
 
+    /*
+       Remove duplicate entries.
+    */
 
-/* =====================================
-   DATE DIFFERENCE
-===================================== */
+    let unique = [];
 
-function dateDifference(a,b){
+    for (let e of entries) {
 
-    if(!a || !b){
-        return 999;
+        let exists = unique.some(x =>
+
+            dateToString(x.date) ===
+            dateToString(e.date) &&
+
+            Math.abs(x.amount - e.amount)
+            < 0.01 &&
+
+            normalizeDescription(x.description) ===
+            normalizeDescription(e.description)
+        );
+
+        if (!exists) {
+            unique.push(e);
+        }
     }
 
-    return Math.abs(
-        a.getTime()-b.getTime()
-    )/(1000*60*60*24);
+    return unique;
 }
 
 
-/* =====================================
-   MATCH
-===================================== */
+/* -----------------------------------------
+   DESCRIPTION NORMALIZATION
+----------------------------------------- */
 
-function matchEntries(tally,bank){
+function normalizeDescription(text) {
 
-    var results=[];
-    var used={};
+    return (text || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
 
-    tally.forEach(function(t){
 
-        var best=null;
-        var bestScore=0;
-        var bestIndex=-1;
+/* -----------------------------------------
+   DESCRIPTION SIMILARITY
+----------------------------------------- */
 
-        bank.forEach(function(b,index){
+function similarity(a, b) {
 
-            if(used[index]){
-                return;
-            }
+    a = normalizeDescription(a);
+    b = normalizeDescription(b);
 
-            if(
+    if (!a || !b) return 0;
+
+    if (a === b) return 1;
+
+    let wordsA = new Set(a.split(" "));
+    let wordsB = new Set(b.split(" "));
+
+    let common = 0;
+
+    wordsA.forEach(word => {
+
+        if (
+            word.length >= 3 &&
+            wordsB.has(word)
+        ) {
+            common++;
+        }
+    });
+
+    let total =
+        Math.max(wordsA.size, wordsB.size);
+
+    if (!total) return 0;
+
+    return common / total;
+}
+
+
+/* -----------------------------------------
+   DATE DIFFERENCE
+----------------------------------------- */
+
+function daysDifference(a, b) {
+
+    if (!a || !b) return 999999;
+
+    const ms =
+        Math.abs(a.getTime() - b.getTime());
+
+    return ms / (1000 * 60 * 60 * 24);
+}
+
+
+/* -----------------------------------------
+   MATCHING
+----------------------------------------- */
+
+function matchEntries(tally, bank) {
+
+    let results = [];
+
+    let usedBank = new Set();
+
+    for (let i = 0; i < tally.length; i++) {
+
+        const t = tally[i];
+
+        let bestIndex = -1;
+        let bestScore = -1;
+
+        for (let j = 0; j < bank.length; j++) {
+
+            if (usedBank.has(j)) continue;
+
+            const b = bank[j];
+
+            /*
+              Amount must match.
+            */
+
+            const amountDifference =
                 Math.abs(
-                    t.amount-b.amount
-                ) > 0.01
-            ){
-                return;
+                    Math.abs(t.amount) -
+                    Math.abs(b.amount)
+                );
+
+            if (amountDifference > 0.01) {
+                continue;
             }
 
-            var score=60;
+            /*
+              Date tolerance ±2 days.
+            */
 
-            var diff =
-                dateDifference(
+            const dateDiff =
+                daysDifference(
                     t.date,
                     b.date
                 );
 
-            if(diff===0){
-                score+=25;
-            }else if(diff<=2){
-                score+=15;
+            if (dateDiff > 2) {
+                continue;
             }
 
-            if(
-                t.type &&
-                b.type &&
-                t.type===b.type
-            ){
-                score+=10;
+            const sim =
+                similarity(
+                    t.description,
+                    b.description
+                );
+
+            /*
+              Scoring:
+              Amount = strongest
+              Date = strong
+              Narration = additional
+            */
+
+            let score = 100;
+
+            score -= dateDiff * 10;
+
+            score += sim * 20;
+
+            if (score > bestScore) {
+
+                bestScore = score;
+                bestIndex = j;
             }
+        }
 
-            if(score>bestScore){
+        if (bestIndex >= 0) {
 
-                bestScore=score;
-                best=b;
-                bestIndex=index;
-            }
+            const b =
+                bank[bestIndex];
 
-        });
-
-        if(best){
-
-            used[bestIndex]=true;
-
-            var status =
-                bestScore>=80
-                ? "MATCHED"
-                : "POSSIBLE";
+            usedBank.add(bestIndex);
 
             results.push({
-                tally:t,
-                bank:best,
-                score:bestScore,
-                status:status
+                status: "MATCHED",
+                tally: t,
+                bank: b
             });
 
-        }else{
+        } else {
 
             results.push({
-                tally:t,
-                bank:null,
-                score:0,
-                status:"MISSING"
+                status: "MISSING IN BANK",
+                tally: t,
+                bank: null
             });
-
         }
-
-    });
-
-    var extra=[];
-
-    bank.forEach(function(b,index){
-
-        if(!used[index]){
-            extra.push(b);
-        }
-
-    });
-
-    return {
-        results:results,
-        extra:extra
-    };
-}
-
-
-/* =====================================
-   FORMAT DATE
-===================================== */
-
-function formatDate(date){
-
-    if(!date) return "-";
-
-    return String(
-        date.getDate()
-    ).padStart(2,"0")
-    + "/" +
-    String(
-        date.getMonth()+1
-    ).padStart(2,"0")
-    + "/" +
-    date.getFullYear();
-}
-
-
-/* =====================================
-   ESCAPE
-===================================== */
-
-function escapeHTML(text){
-
-    return String(text || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;");
-}
-
-
-/* =====================================
-   SHOW RESULTS
-===================================== */
-
-function showResults(tally,bank,data){
-
-    var matched=0;
-    var possible=0;
-    var missing=0;
-
-    data.results.forEach(function(r){
-
-        if(r.status==="MATCHED"){
-            matched++;
-        }else if(r.status==="POSSIBLE"){
-            possible++;
-        }else{
-            missing++;
-        }
-
-    });
-
-    var html = `
-
-    <div class="card">
-
-        <h2>📊 Summary</h2>
-
-        <div class="summary">
-
-            <div class="box">
-                Tally Entries
-                <b>${tally.length}</b>
-            </div>
-
-            <div class="box">
-                Bank Entries
-                <b>${bank.length}</b>
-            </div>
-
-            <div class="box">
-                Matched
-                <b>${matched}</b>
-            </div>
-
-        </div>
-
-        <br>
-
-        <div class="summary">
-
-            <div class="box">
-                Possible
-                <b>${possible}</b>
-            </div>
-
-            <div class="box">
-                Missing
-                <b>${missing}</b>
-            </div>
-
-            <div class="box">
-                Extra Bank
-                <b>${data.extra.length}</b>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="card">
-
-        <h2>📋 Tally vs Bank</h2>
-
-        <div class="tableBox">
-
-        <table>
-
-        <tr>
-            <th>#</th>
-            <th>Tally Date</th>
-            <th>Amount</th>
-            <th>Type</th>
-            <th>Bank Date</th>
-            <th>Status</th>
-            <th>Score</th>
-        </tr>
-    `;
-
-    data.results.forEach(function(r,i){
-
-        html += `
-
-        <tr>
-
-            <td>${i+1}</td>
-
-            <td>
-                ${formatDate(r.tally.date)}
-            </td>
-
-            <td>
-                ₹${r.tally.amount.toFixed(2)}
-            </td>
-
-            <td>
-                ${escapeHTML(r.tally.type)}
-            </td>
-
-            <td>
-                ${
-                    r.bank
-                    ? formatDate(r.bank.date)
-                    : "-"
-                }
-            </td>
-
-            <td class="${r.status}">
-                ${r.status}
-            </td>
-
-            <td>${r.score}</td>
-
-        </tr>
-        `;
-
-    });
-
-    html += `
-
-        </table>
-
-        </div>
-
-    </div>
-    `;
-
-
-    html += `
-
-    <div class="card">
-
-        <h2>🔎 Detected Tally Entries</h2>
-
-        <div class="tableBox">
-
-        <table>
-
-        <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Type</th>
-            <th>Narration</th>
-        </tr>
-    `;
-
-    tally.forEach(function(e,i){
-
-        html += `
-
-        <tr>
-
-            <td>${i+1}</td>
-
-            <td>${formatDate(e.date)}</td>
-
-            <td>₹${e.amount.toFixed(2)}</td>
-
-            <td>${escapeHTML(e.type)}</td>
-
-            <td>${escapeHTML(e.text)}</td>
-
-        </tr>
-        `;
-
-    });
-
-    html += `
-
-        </table>
-
-        </div>
-
-    </div>
-    `;
-
-
-    html += `
-
-    <div class="card">
-
-        <h2>🏦 Detected Bank Entries</h2>
-
-        <div class="tableBox">
-
-        <table>
-
-        <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Type</th>
-            <th>Narration</th>
-        </tr>
-    `;
-
-    bank.forEach(function(e,i){
-
-        html += `
-
-        <tr>
-
-            <td>${i+1}</td>
-
-            <td>${formatDate(e.date)}</td>
-
-            <td>₹${e.amount.toFixed(2)}</td>
-
-            <td>${escapeHTML(e.type)}</td>
-
-            <td>${escapeHTML(e.text)}</td>
-
-        </tr>
-        `;
-
-    });
-
-    html += `
-
-        </table>
-
-        </div>
-
-    </div>
-    `;
-
-
-    document.getElementById(
-        "result"
-    ).innerHTML=html;
-}
-
-
-/* =====================================
-   MAIN FUNCTION
-===================================== */
-
-async function startAnalysis(){
-
-    var tallyFile =
-        document.getElementById(
-            "tallyFile"
-        ).files[0];
-
-    var bankFile =
-        document.getElementById(
-            "bankFile"
-        ).files[0];
-
-    var button =
-        document.getElementById(
-            "analyzeBtn"
-        );
-
-    document.getElementById(
-        "result"
-    ).innerHTML="";
-
-    if(!tallyFile){
-
-        showStatus(
-            "❌ Pehle Tally PDF select karein.",
-            "error"
-        );
-
-        return;
     }
 
-    if(!bankFile){
+    /*
+       Bank entries not used by Tally.
+    */
 
-        showStatus(
-            "❌ Pehle Bank PDF select karein.",
-            "error"
-        );
+    for (let j = 0; j < bank.length; j++) {
 
-        return;
+        if (!usedBank.has(j)) {
+
+            results.push({
+                status: "EXTRA IN BANK",
+                tally: null,
+                bank: bank[j]
+            });
+        }
     }
 
-    button.disabled=true;
-
-    button.innerText=
-        "⏳ Analysis chal raha hai...";
-
-    try{
-
-        showStatus(
-            "🚀 Analysis start ho gaya..."
-        );
-
-        var tallyText =
-            await readPDF(
-                tallyFile,
-                "Tally"
-            );
-
-        var bankText =
-            await readPDF(
-                bankFile,
-                "Bank"
-            );
-
-        if(!tallyText.trim()){
-
-            throw new Error(
-                "Tally PDF se text nahi mila. Ye scanned/image PDF ho sakti hai."
-            );
-        }
-
-        if(!bankText.trim()){
-
-            throw new Error(
-                "Bank PDF se text nahi mila. Ye scanned/image PDF ho sakti hai."
-            );
-        }
-
-        showStatus(
-            "🔎 Tally entries detect ho rahi hain..."
-        );
-
-        var tallyEntries =
-            detectTransactions(
-                tallyText
-            );
-
-        showStatus(
-            "🔎 Bank entries detect ho rahi hain..."
-        );
-
-        var bankEntries =
-            detectTransactions(
-                bankText
-            );
-
-        if(tallyEntries.length===0){
-
-            throw new Error(
-                "Tally PDF read hui, lekin transaction detect nahi hui."
-            );
-        }
-
-        if(bankEntries.length===0){
-
-            throw new Error(
-                "Bank PDF read hui, lekin transaction detect nahi hui."
-            );
-        }
-
-        showStatus(
-            "⚡ Entries match ki ja rahi hain..."
-        );
-
-        var matched =
-            matchEntries(
-                tallyEntries,
-                bankEntries
-            );
-
-        showResults(
-            tallyEntries,
-            bankEntries,
-            matched
-        );
-
-        showStatus(
-            "✅ Analysis complete!",
-            "success"
-        );
-
-    }catch(error){
-
-        console.error(error);
-
-        showStatus(
-            "❌ " + error.message,
-            "error"
-        );
-
-    }finally{
-
-        button.disabled=false;
-
-        button.innerText=
-            "🔍 Analyze & Match Entries";
-
-    }
+    return results;
 }
 
-</script>
 
-</body>
-    </html>
+/* -----------------------------------------
+   DISPLAY TABLE
+----------------------------------------- */
+
+function displayEntries(
+    entries,
+    tbodyId
+) {
+
+    const tbody =
+        document.getElementById(tbodyId);
+
+    tbody.innerHTML = "";
+
+    entries.forEach((e, i) => {
+
+        const tr =
+            document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${dateToString(e.date)}</td>
+            <td>${escapeHTML(e.description)}</td>
+            <td>${formatAmount(e.amount)}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+
+function displayResults(results) {
+
+    const tbody =
+        document.getElementById("resultBody");
+
+    tbody.innerHTML = "";
+
+    results.fo
