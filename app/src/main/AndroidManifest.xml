@@ -8,6 +8,9 @@
         android:label="Tally Bank Reconciliation"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        android:icon="@drawable/bs_logo"
+        android:roundIcon="@drawable/bs_logo"
+        android:label="BS"
 
         <activity
             android:name=".MainActivity"
